@@ -84,6 +84,28 @@ LogstashFormatterV1
         "levelname": "ERROR"
     }
 
+LogstashLogbackFormatter
+------------------------
+
+::
+
+    {
+        "@timestamp": "2019-01-01T17:42:34.649360Z",
+        "@version": 1,
+        "message": "hello world!",
+        "logger_name": "root",
+        "thread_name": "MainThread",
+        "level": "ERROR",
+        "level_value": 40,
+        "tags": [
+            "env=prod",
+            "role=www"
+        ],
+        "host": "server-01.example.com",
+        "path": "example.py",
+        "type": "JSON"
+    }
+
 Python example
 --------------
 
@@ -97,7 +119,7 @@ Python example
 
     logHandler = logging.StreamHandler()
 
-    # You can also use LogstashFormatterV0 or LogstashFormatterV1
+    # You can also use LogstashFormatterV0, LogstashFormatterV1, or LogstashLogbackFormatter
     formatter = jsonlogging.JSONFormatter(
         hostname="server-01.example.com"
         tags=["env=prod", "role=www"],

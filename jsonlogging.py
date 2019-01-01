@@ -194,3 +194,52 @@ class LogstashFormatterV1(JSONFormatter):
             message.update(self.get_debug_fields(record))
 
         return self.serialize(message, indent=self.indent)
+
+
+class LogstashLogbackFormatter(JSONFormatter):
+    """
+    Logstash Logback formatter
+    https://github.com/logstash/logstash-logback-encoder#standard-fields
+    """
+
+    def get_debug_fields(self, record):
+        if record.exc_info:
+            exc_info = self.format_exception(record.exc_info)
+        else:
+            exc_info = record.exc_text
+        return {
+            'stack_trace': exc_info,
+            'filename': record.filename,
+            'lineno': record.lineno,
+        }
+    
+    def format(self, record):
+        # Create message dict
+        message = {
+            '@timestamp': self.format_timestamp(record.created),
+            '@version': 1,
+            'message': record.getMessage(),
+            'logger_name': record.name,
+            'thread_name': record.threadName,
+            'level': record.levelname,
+            'level_value': record.levelno,
+            'tags': self.tags[:],
+
+            # Extra Fields
+            'host': self.host,
+            'path': record.pathname,
+            'type': self.message_type,
+        }
+
+        # Add extra fields
+        message.update(self.get_extra_fields(record))
+
+        # Add extra tags
+        if self.extra_tags:
+            message['tags'].extend(self.extra_tags)
+
+        # If exception, add debug info
+        if record.exc_info or record.exc_text:
+            message.update(self.get_debug_fields(record))
+
+        return self.serialize(message, indent=self.indent)

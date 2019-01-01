@@ -6,7 +6,7 @@ logger = logging.getLogger()
 
 logHandler = logging.StreamHandler()
 
-# You can also use LogstashFormatterV0 or LogstashFormatterV1
+# You can also use LogstashFormatterV0, LogstashFormatterV1, or LogstashLogbackFormatter
 formatter = jsonlogging.JSONFormatter(
     hostname="server-01.example.com",
     tags=["env=prod", "role=www"],
